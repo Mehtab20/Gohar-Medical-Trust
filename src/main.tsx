@@ -8,13 +8,9 @@ import { AuthProvider } from "@/providers/auth-provider";
 import App from "./App";
 import "./index.css";
 
-const convexUrl = import.meta.env.VITE_CONVEX_URL;
-if (!convexUrl) {
-  throw new Error(
-    "VITE_CONVEX_URL is not defined. " +
-    "Set it in your .env.local file or through Freebuff's Keys tab."
-  );
-}
+const convexUrl =
+  import.meta.env.VITE_CONVEX_URL ??
+  "https://ardent-elk-440.convex.cloud";
 
 const convexClient = new ConvexReactClient(convexUrl);
 

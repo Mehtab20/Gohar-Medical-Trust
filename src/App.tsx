@@ -41,6 +41,18 @@ function RequireAuth({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <Routes>
+      <Route path="/" element={
+        <div className="flex min-h-screen items-center justify-center bg-green-50">
+          <div className="text-center">
+            <h1 className="text-4xl font-bold text-green-800">🏥 Gohar Medical Trust</h1>
+            <p className="mt-2 text-lg text-green-600">Hospital Management System</p>
+            <a href="/auth" className="mt-4 inline-block rounded-lg bg-green-700 px-6 py-2 text-white hover:bg-green-800">
+              Sign In
+            </a>
+            <p className="mt-8 text-sm text-gray-500">If you see this, the page loads! 🎉</p>
+          </div>
+        </div>
+      } />
       <Route path="/auth" element={<AuthPage />} />
       <Route
         element={
@@ -49,7 +61,7 @@ export default function App() {
           </RequireAuth>
         }
       >
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/patients" element={<PatientsPage />} />
         <Route path="/patients/new" element={<NewPatientPage />} />
