@@ -23,6 +23,8 @@ import {
   ShieldAlert,
   DoorOpen,
   Bed,
+  FileText,
+  Stethoscope,
 } from "lucide-react";
 import { formatDate, formatPhone } from "@/lib/utils";
 import { motion } from "framer-motion";
@@ -37,6 +39,26 @@ const tabs: { key: Tab; label: string }[] = [
   { key: "appointments", label: "Appointments" },
   { key: "billing", label: "Billing" },
 ];
+
+const recordTypeLabels: Record<string, string> = {
+  consultation: "Consultation",
+  admission: "Admission Note",
+  discharge_summary: "Discharge Summary",
+  surgery: "Surgery Report",
+  followup: "Follow-up",
+  lab_report: "Lab Report",
+  imaging_report: "Imaging Report",
+};
+
+const recordTypeColors: Record<string, string> = {
+  consultation: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400",
+  admission: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400",
+  discharge_summary: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
+  surgery: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400",
+  followup: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400",
+  lab_report: "bg-cyan-100 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-400",
+  imaging_report: "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400",
+};
 
 export default function PatientDetailPage() {
   const { patientId } = useParams<{ patientId: string }>();
@@ -190,21 +212,13 @@ export default function PatientDetailPage() {
       {/* Tab content */}
       {activeTab === "overview" && <OverviewTab patient={patient} />}
       {activeTab === "adt" && <AdmissionTab patientId={patientId!} />}
-      {activeTab === "medical" && (
-        <Card>
-          <CardContent className="py-12 text-center">
-            <Activity className="mx-auto h-12 w-12 text-muted-foreground/50" />
-            <h3 className="mt-4 text-lg font-semibold">Medical History</h3>
-            <p className="mt-2 text-sm text-muted-foreground">Coming soon in Phase 2.5</p>
-          </CardContent>
-        </Card>
-      )}
+      {activeTab === "medical" && <MedicalTab patientId={patientId!} />}
       {activeTab === "appointments" && (
         <Card>
           <CardContent className="py-12 text-center">
             <Calendar className="mx-auto h-12 w-12 text-muted-foreground/50" />
             <h3 className="mt-4 text-lg font-semibold">Appointments</h3>
-            <p className="mt-2 text-sm text-muted-foreground">Coming soon in Phase 2.3</p>
+            <p className="mt-2 text-sm text-muted-foreground">Coming soon</p>
           </CardContent>
         </Card>
       )}
@@ -213,7 +227,7 @@ export default function PatientDetailPage() {
           <CardContent className="py-12 text-center">
             <Activity className="mx-auto h-12 w-12 text-muted-foreground/50" />
             <h3 className="mt-4 text-lg font-semibold">Billing History</h3>
-            <p className="mt-2 text-sm text-muted-foreground">Coming soon in Phase 4</p>
+            <p className="mt-2 text-sm text-muted-foreground">Coming soon</p>
           </CardContent>
         </Card>
       )}
@@ -221,6 +235,94 @@ export default function PatientDetailPage() {
   );
 }
 
+// ── Medical History Tab ──────────────────────────────────
+function MedicalTab({ patientId }: { patientId: string }) {
+  const navigate = useNavigate();
+  const records = useQuery(api.medical_records.queries.listRecordsByPatient, {
+    patientId: patientId as any,
+  });
+
+  return (
+    <div>
+      <div className="mb-4 flex items-center justify-between">
+        <p className="text-sm text-muted-foreground">
+          {records ? `${records.length} record(s)` : ""}
+        </p>
+        <Button
+          size="sm"
+          onClick={() => navigate(`/medical-records/new?patientId=${patientId}`)}
+        >
+          <FileText className="mr-2 h-4 w-4" /> New Record
+        </Button>
+      </div>
+
+      {!records ? (
+        <div className="flex min-h-[30vh] items-center justify-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+        </div>
+      ) : records.length === 0 ? (
+        <Card>
+          <CardContent className="flex flex-col items-center py-12 text-center">
+            <FileText className="h-12 w-12 text-muted-foreground/50" />
+            <h3 className="mt-4 text-lg font-semibold">No Medical Records</h3>
+            <p className="mt-1 text-sm text-muted-foreground">
+              No records have been created for this patient yet.
+            </p>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="space-y-3">
+          {records.map((record) => {
+            const color = recordTypeColors[record.recordType] ?? "bg-gray-100 text-gray-800";
+            const label = recordTypeLabels[record.recordType] ?? record.recordType;
+            return (
+              <motion.div
+                key={record._id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+              >
+                <button
+                  onClick={() => navigate(`/medical-records/${record._id}`)}
+                  className="w-full text-left"
+                >
+                  <Card className="transition-shadow hover:shadow-md">
+                    <CardContent className="p-4">
+                      <div className="flex items-start gap-3">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                          <Stethoscope className="h-4 w-4 text-primary" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-2">
+                            <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${color}`}>
+                              {label}
+                            </span>
+                            <span className="text-xs text-muted-foreground">
+                              {formatDate(record.createdAt)}
+                            </span>
+                          </div>
+                          {record.diagnosis && (
+                            <p className="mt-1 text-sm font-medium line-clamp-1">{record.diagnosis}</p>
+                          )}
+                          {record.symptoms.length > 0 && (
+                            <p className="mt-0.5 text-xs text-muted-foreground line-clamp-1">
+                              {record.symptoms.join(", ")}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </button>
+              </motion.div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Admission Tab ──────────────────────────────────
 function AdmissionTab({ patientId }: { patientId: string }) {
   const nav = useNavigate();
   const activeAdmission = useQuery(api.adt.queries.getActiveAdmission, { patientId: patientId as any });
@@ -254,7 +356,7 @@ function AdmissionTab({ patientId }: { patientId: string }) {
         <Card>
           <CardHeader><CardTitle className="text-base">Admission History</CardTitle></CardHeader>
           <CardContent className="space-y-3">
-            {admissionHistory.map(({ assignment, room }) => (
+            {admissionHistory.map(({ assignment }) => (
               <div key={assignment._id} className="flex items-center gap-3 rounded-lg border p-3 text-sm">
                 <div className={`h-2 w-2 rounded-full ${assignment.status === "active" ? "bg-green-500" : assignment.status === "discharged" ? "bg-gray-400" : "bg-blue-500"}`} />
                 <div className="flex-1">
@@ -265,7 +367,6 @@ function AdmissionTab({ patientId }: { patientId: string }) {
                   <p className="text-xs text-muted-foreground">
                     Admitted {formatDate(assignment.admissionDate)}
                     {assignment.actualDischargeDate && ` · Discharged ${formatDate(assignment.actualDischargeDate)}`}
-                    {room && ` · ${room.roomNumber}`}
                   </p>
                 </div>
               </div>
@@ -277,6 +378,7 @@ function AdmissionTab({ patientId }: { patientId: string }) {
   );
 }
 
+// ── Overview Tab ──────────────────────────────────
 function OverviewTab({ patient }: { patient: Doc<"patients"> }) {
   return (
     <div className="grid gap-6 lg:grid-cols-2">

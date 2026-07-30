@@ -1,8 +1,8 @@
 # AI_CONTEXT.md — Gohar Medical Trust HMS
 
 > **Last Updated:** July 30, 2026
-> **Phase:** Phase 1 Complete — Foundation Scaffolded
-> **Status:** Ready for Phase 2 — Core Clinical Modules
+> **Phase:** Phase 3.1 Complete — Lab Information System
+> **Status:** Ready for Phase 3.2 — Radiology / Imaging
 
 ---
 
@@ -271,7 +271,9 @@ To become the benchmark for hospital management technology in Pakistan's distric
 
 ---
 
-## 7. Features Completed (Phase 1)
+## 7. Features Completed
+
+### Phase 1 — Foundation
 
 | Feature | Status | Details |
 |---------|--------|---------|
@@ -296,7 +298,11 @@ To become the benchmark for hospital management technology in Pakistan's distric
 | Convex functions deployment | ✅ Done | All 18 tables with 55+ indexes live |
 | ARCHITECTURE.md | ✅ Done | Comprehensive architecture document |
 | AI_CONTEXT.md | ✅ Done | This file — product vision, personas, UX strategy |
-| **Patient Management (Phase 2.1)** | ✅ **Done** | **Full module: CRUD, MRN generation, search, detail view** |
+
+### Phase 2.1 — Patient Management
+
+| Feature | Status | Details |
+|---------|--------|---------|
 | Patient Convex mutations | ✅ Done | createPatient, updatePatient, updatePatientStatus, deletePatient |
 | Patient Convex queries | ✅ Done | getPatient, getPatientByMRN, listPatients, searchPatients, getPatientCount |
 | MRN auto-generation | ✅ Done | GMT-YYYY-XXXXX format with collision retry |
@@ -310,22 +316,66 @@ To become the benchmark for hospital management technology in Pakistan's distric
 | EmptyState component | ✅ Done | Placeholder with icon, description, action |
 | Patient routes | ✅ Done | /patients, /patients/new, /patients/:id, /patients/:id/edit |
 
+### Phase 2.2 — Departments & Rooms
+
+| Feature | Status | Details |
+|---------|--------|---------|
+| Department Convex backend | ✅ Done | CRUD mutations, list/query with active filter |
+| Room Convex backend | ✅ Done | CRUD mutations, filter by department/type/status |
+| Rooms & beds schema | ✅ Done | Room types (ward, private, ICU, NICU, OT, etc.), capacity, rate |
+| Department management page | ✅ Done | List, create, edit, status toggle |
+| Room management page | ✅ Done | Bed grid, filters, occupancy indicators |
+| Admin sidebar | ✅ Done | /admin/departments, /admin/rooms routes |
+
+### Phase 2.3 — Appointment Scheduling
+
+| Feature | Status | Details |
+|---------|--------|---------|
+| Appointment Convex mutations | ✅ Done | createAppointment with conflict checking, update, status change, delete |
+| Appointment Convex queries | ✅ Done | get, listByDate, listByPatient, listByDoctor, listUpcoming, getAvailableSlots |
+| Time conflict prevention | ✅ Done | Blocks double-booking of doctors |
+| Calendar week view | ✅ Done | 7-day grid with scrollable hour slots and appointment cards |
+| Appointment form | ✅ Done | Patient, doctor, date/time selection with available slot picker |
+| Appointment detail page | ✅ Done | Full appointment info, status actions, doctor/patient info |
+| 30-min slot generation | ✅ Done | Auto-generates 9AM-5PM slots, filters booked ones |
+
+### Phase 2.4 — Admission / Discharge / Transfer (ADT)
+
+| Feature | Status | Details |
+|---------|--------|---------|
+| ADT Convex mutations | ✅ Done | admitPatient, dischargePatient, transferPatient |
+| ADT Convex queries | ✅ Done | getActiveAdmission, listActiveAdmissions, getPatientAdmissions, getAvailableBeds, getWardStats |
+| Double-admission prevention | ✅ Done | Patient can't be admitted twice |
+| Room capacity enforcement | ✅ Done | Can't exceed bed count |
+| Status-aware room updates | ✅ Done | Room goes occupied when full, available when empty |
+| Ward overview page | ✅ Done | KPI cards, occupancy bars, active admissions list |
+| Patient admission form | ✅ Done | 3-step workflow: patient → details → bed selection grid |
+| Patient detail admission tab | ✅ Done | Shows active admission status and history timeline |
+| Ward stats | ✅ Done | Occupancy rate, available/occupied beds, department breakdown |
+
+### Phase 2.5 — Medical Records (EHR)
+
+| Feature | Status | Details |
+|---------|--------|---------|
+| Medical Records Convex mutations | ✅ Done | createRecord, updateRecord, deleteRecord |
+| Medical Records Convex queries | ✅ Done | getRecord, listByPatient, listByDoctor, listRecentRecords, getRecordCount |
+| Confidentiality enforcement | ✅ Done | Confidential records restricted to author + super_admin/admin |
+| SOAP clinical notes | ✅ Done | Support for consultation, admission, discharge, surgery, followup, lab, imaging record types |
+| Vital signs tracking | ✅ Done | BP, HR, temp, RR, O2 sat, weight, height with toggleable form section |
+| Symptom management | ✅ Done | Add/remove symptoms with chips |
+| Record type filtering | ✅ Done | Filter by type with color-coded badges |
+| Record list page | ✅ Done | Search, type filters, patient names, diagnosis preview |
+| Record create form | ✅ Done | Patient & doctor select, symptoms, vitals, treatment plan, SOAP notes |
+| Record detail page | ✅ Done | Full record view with vitals grid, treatment plan, clinical notes |
+| Patient-level medical history | ✅ Done | Medical history tab in patient detail showing linked records |
+| Users query: listUsersByRole | ✅ Done | Added for user filtering in forms |
+| Medical records routes | ✅ Done | /medical-records, /medical-records/new, /medical-records/:id |
+
 ---
 
 ## 8. Features Pending (Next Phases)
 
-### Phase 2 — Core Clinical Modules (NEXT)
-
-| Feature | Priority | Effort | Notes |
-|---------|----------|--------|-------|
-| ✅ **Patient Management** | ✅ **Done** | **Full CRUD, search, detail, edit** |
-| Department Management | 🟡 High | 1 day | CRUD for hospital departments |
-| Room & Bed Management | 🟡 High | 2 days | Room types, bed capacity, occupancy tracking |
-| Appointment Scheduling | 🔴 Critical | 3 days | Calendar view, slot management, booking |
-| Admission / Discharge / Transfer | 🟡 High | 2 days | Bed assignment workflow |
-| Medical Records (EHR) | 🔴 Critical | 3 days | SOAP notes, vitals, attachments |
-
-### Phase 3 — Ancillary Services
+### Phase 3 — Ancillary Services (NEXT)
 
 | Feature | Priority | Effort |
 |---------|----------|--------|
@@ -406,6 +456,12 @@ To become the benchmark for hospital management technology in Pakistan's distric
 | 2026-07-30 | Soft-delete pattern for patients | Status change to 'inactive' instead of hard delete — clinical data must be retained | Hard delete |
 | 2026-07-30 | Client-side search for patients | Acceptable for <10k patient records; avoids adding a search service dependency | Convex full-text search (not available natively) |
 | 2026-07-30 | DataTable uses role=button for rows | Keyboard-accessible row clicks (Enter/Space) | Click-only interaction |
+| 2026-07-30 | Medical Records module uses `_rec` naming for Convex dirs | Convex function paths can only contain alphanumeric, underscores, periods (no hyphens) | Initial `medical-records/` (failed deploy) |
+| 2026-07-30 | Confidential medical records server-enforced | Doctors can mark records confidential; only they + super_admin/admin can view | Equal access by default |
+| 2026-07-30 | Vital signs as optional nested object in medicalRecords | Keeps vitals co-located with clinical notes instead of separate table | Separate vitals table |
+| 2026-07-30 | Record type color coding for quick visual scanning | 7 record types each get distinct colors (consultation=blue, surgery=red, etc.) | Single badge style |
+| 2026-07-30 | Symptom chips with add/remove UX | Doctors can quickly tag symptoms without typing them into free text | Free-text symptoms field |
+| 2026-07-30 | Patient medical records linked from patient detail page | Full context switching without losing patient context | Standalone records page only |
 
 ---
 

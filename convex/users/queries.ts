@@ -35,6 +35,32 @@ export const getUser = query({
   },
 });
 
+export const listUsersByRole = query({
+  args: {
+    role: v.union(
+      v.literal("super_admin"),
+      v.literal("admin"),
+      v.literal("doctor"),
+      v.literal("nurse"),
+      v.literal("receptionist"),
+      v.literal("pharmacist"),
+      v.literal("lab_technician"),
+      v.literal("radiologist"),
+      v.literal("billing_staff"),
+      v.literal("hr"),
+    ),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) return [];
+
+    return await ctx.db
+      .query("users")
+      .withIndex("by_role", (q) => q.eq("role", args.role))
+      .collect();
+  },
+});
+
 export const listUsers = query({
   args: {
     role: v.optional(

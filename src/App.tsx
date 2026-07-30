@@ -14,6 +14,12 @@ import DepartmentsPage from "@/pages/admin/departments";
 import RoomsPage from "@/pages/admin/rooms";
 import WardOverviewPage from "@/pages/adt";
 import AdmitPatientPage from "@/pages/patients/admit";
+import MedicalRecordsPage from "@/pages/medical-records";
+import NewMedicalRecordPage from "@/pages/medical-records/new";
+import MedicalRecordDetailPage from "@/pages/medical-records/[recordId]";
+import LabPage from "@/pages/lab";
+import NewLabOrderPage from "@/pages/lab/new";
+import LabOrderDetailPage from "@/pages/lab/[orderId]";
 import NotFoundPage from "@/pages/not-found";
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
@@ -73,13 +79,18 @@ export default function App() {
         <Route path="/admin" element={<DepartmentsPage />} />
         <Route path="/adt" element={<WardOverviewPage />} />
         <Route path="/patients/admit" element={<AdmitPatientPage />} />
+        <Route path="/medical-records" element={<MedicalRecordsPage />} />
+        <Route path="/medical-records/new" element={<NewMedicalRecordPage />} />
+        <Route path="/medical-records/:recordId" element={<MedicalRecordDetailPage />} />
+        <Route path="/lab" element={<LabPage />} />
+        <Route path="/lab/new" element={<NewLabOrderPage />} />
+        <Route path="/lab/:orderId" element={<LabOrderDetailPage />} />
         <Route path="/admin/departments" element={<DepartmentsPage />} />
         <Route path="/admin/rooms" element={<RoomsPage />} />
         {/* Placeholder routes for future modules */}
-        <Route path="/medical-records" element={<PlaceholderPage title="Medical Records" />} />
         <Route path="/billing" element={<PlaceholderPage title="Billing" />} />
         <Route path="/pharmacy" element={<PlaceholderPage title="Pharmacy" />} />
-        <Route path="/lab" element={<PlaceholderPage title="Lab" />} />
+
         <Route path="/radiology" element={<PlaceholderPage title="Radiology" />} />
         <Route path="/inventory" element={<PlaceholderPage title="Inventory" />} />
         <Route path="/staff" element={<PlaceholderPage title="Staff" />} />
